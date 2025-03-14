@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM fully loaded and parsed"); // Debugging
     if (navigator.geolocation) {
+        console.log("Requesting geolocation..."); // Debugging
         navigator.geolocation.getCurrentPosition(getWeather, showError);
     } else {
         alert("Geolocation is not supported by this browser.");
@@ -7,9 +9,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function getWeather(position) {
+    console.log("Geolocation success:", position); // Debugging
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
-    const apiKey = process.env.WEATHERAPI_API_KEY; // Use environment variable
+    const apiKey = process.env.NEXT_PUBLIC_WEATHERAPI_API_KEY; // Use the new environment variable
     const apiUrl = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${lat},${lon}`;
 
     console.log("Fetching weather data from:", apiUrl); // Debugging
