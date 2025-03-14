@@ -12,16 +12,25 @@ function getWeather(position) {
     const apiKey = process.env.WEATHERAPI_API_KEY; // Use environment variable
     const apiUrl = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${lat},${lon}`;
 
+    console.log("Fetching weather data from:", apiUrl); // Debugging
+
     fetch(apiUrl)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log("Weather data received:", data); // Debugging
+
             const location = data.location.name + ", " + data.location.country;
-            const temperature = data.current.temp_c;
+            const temperature = data.current.temp_c + "°C";
             const description = data.current.condition.text;
             const iconUrl = data.current.condition.icon;
 
             document.getElementById('location').textContent = `Location: ${location}`;
-            document.getElementById('temperature').textContent = `Temperature: ${temperature}°C`;
+            document.getElementById('temperature').textContent = `Temperature: ${temperature}`;
             document.getElementById('description').textContent = `Description: ${description}`;
 
             // Optional: Add weather icon
@@ -32,10 +41,14 @@ function getWeather(position) {
         })
         .catch(error => {
             console.error('Error fetching weather data:', error);
+            document.getElementById('location').textContent = "Failed to load location.";
+            document.getElementById('temperature').textContent = "Failed to load temperature.";
+            document.getElementById('description').textContent = "Failed to load weather description.";
         });
 }
 
 function showError(error) {
+    console.error('Geolocation error:', error); // Debugging
     switch(error.code) {
         case error.PERMISSION_DENIED:
             alert("User denied the request for Geolocation.");
